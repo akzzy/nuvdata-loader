@@ -1,0 +1,18 @@
+[
+  {
+    "id": "org.dahmermovies.provider",
+    "name": "A11",
+    "description": "Scraper for a.111477.xyz",
+    "version": "1.0.0",
+    "author": "Phisher98",
+    "supportedTypes": ["movie", "tv"],
+    "filename": "providers/dahmer.js",
+    "enabled": true,
+    "logo": "",
+    "contentLanguage": ["en"],
+    "formats": ["mp4", "mkv"],
+    "limited": false,
+    "disabledPlatforms": [],
+    "supportsExternalPlayer": true
+  }
+]
