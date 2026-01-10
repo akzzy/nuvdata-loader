@@ -1,5 +1,5 @@
 {
-  "name": "Mera's Repo",
+  "name": "Yoru's Repo",
   "version": "1.0.0",
   "scrapers": [
     {
@@ -7,7 +7,7 @@
       "name": "DahmerMovies",
       "description": "Dahmer Movies streaming service.",
       "version": "1.0.1",
-      "author": "Phish8",
+      "author": "Phisher98",
       "supportedTypes": [
         "movie",
         "tv"
