@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "scrapers": [
     {
-      "id": "dahmermovies",
-      "name": "DahmerMovies",
+      "id": "A11",
+      "name": "A11",
       "description": "Dahmer Movies streaming service.",
-      "version": "1.0.1",
-      "author": "Phisher98",
+      "version": "1.0.2",
+      "author": "Phisher",
       "supportedTypes": [
         "movie",
         "tv"
