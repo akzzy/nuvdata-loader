@@ -5,8 +5,8 @@
     {
       "id": "A11",
       "name": "A11",
-      "description": "Dahmer Movies streaming service.",
-      "version": "1.0.2",
+      "description": "A11 Movies streaming service.",
+      "version": "1.2",
       "author": "Phisher",
       "supportedTypes": [
         "movie",
