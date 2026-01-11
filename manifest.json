@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "scrapers": [
     {
-      "id": "koran",
-      "name": "kora",
+      "id": "A11",
+      "name": "A11",
       "description": "A11 Movies streaming service.",
       "version": "1.2",
       "author": "Phisher",
