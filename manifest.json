@@ -26,7 +26,7 @@
       "id": "hashes",
       "name": "Hashes (Bollywood)",
       "description": "Direct links from Hashes API",
-      "version": "1.3",
+      "version": "1.5",
       "author": "Phisher",
       "supportedTypes": [
         "movie",
