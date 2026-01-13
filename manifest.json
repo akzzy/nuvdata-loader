@@ -1,6 +1,6 @@
 {
   "name": "A11 Repo",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "scrapers": [
     {
       "id": "A11",
@@ -16,6 +16,27 @@
       "enabled": true,
       "formats": [
         "mkv"
+      ],
+      "logo": "https://image.similarpng.com/file/similarpng/very-thumbnail/2021/05/Letter-D-logo-design-template-with-geometric-shape-style-on-transparent-background-PNG.png",
+      "contentLanguage": [
+        "en"
+      ]
+    },
+    {
+      "id": "hashes",
+      "name": "Hashes (Bollywood)",
+      "description": "Direct links from Hashes API",
+      "version": "1.0.0",
+      "author": "Phisher",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/hashes.js",
+      "enabled": true,
+      "formats": [
+        "mkv",
+        "mp4"
       ],
       "logo": "https://image.similarpng.com/file/similarpng/very-thumbnail/2021/05/Letter-D-logo-design-template-with-geometric-shape-style-on-transparent-background-PNG.png",
       "contentLanguage": [
