@@ -1,6 +1,6 @@
 {
   "name": "A11 Repo",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "scrapers": [
     {
       "id": "A11",
@@ -39,6 +39,27 @@
         "mp4"
       ],
       "logo": "https://image.similarpng.com/file/similarpng/very-thumbnail/2021/05/Letter-D-logo-design-template-with-geometric-shape-style-on-transparent-background-PNG.png",
+      "contentLanguage": [
+        "en"
+      ]
+    },
+    {
+      "id": "moviesmod",
+      "name": "MoviesMod",
+      "description": "High Quality 4K/1080p Links",
+      "version": "1.0.0",
+      "author": "Phisher",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/moviesmod.js",
+      "enabled": true,
+      "formats": [
+        "mkv",
+        "mp4"
+      ],
+      "logo": "https://moviesmod.build/wp-content/uploads/2022/10/moviesmod.png",
       "contentLanguage": [
         "en"
       ]
