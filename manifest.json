@@ -44,6 +44,18 @@
       ]
     },
     {
+      "id": "afds",
+      "name": "AFDS",
+      "description": "High-speed Telegram Backend",
+      "version": "1.0.0",
+      "author": "Phisher",
+      "supportedTypes": ["movie"],
+      "filename": "providers/afds.js",
+      "enabled": true,
+      "formats": ["mkv", "mp4"],
+      "contentLanguage": ["en"]
+    },
+    {
       "id": "moviesmod",
       "name": "MoviesMod",
       "description": "High Quality 4K/1080p Links",
