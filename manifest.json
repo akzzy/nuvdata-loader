@@ -47,12 +47,13 @@
       "id": "afds",
       "name": "AFDS",
       "description": "High-speed Telegram Backend",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Phisher",
       "supportedTypes": ["movie"],
       "filename": "providers/afds.js",
       "enabled": true,
       "formats": ["mkv", "mp4"],
+      "logo": "https://afds.pages.dev/images/logo-big.svg",
       "contentLanguage": ["en"]
     },
     {
