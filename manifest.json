@@ -47,7 +47,7 @@
       "id": "afds",
       "name": "AFDS",
       "description": "High-speed Telegram Backend",
-      "version": "4.9.0",
+      "version": "5.0.0",
       "author": "Phisher",
       "supportedTypes": [
         "movie",
