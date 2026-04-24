@@ -29,7 +29,7 @@ var TMDB_API_KEY = "439c478a771f35c05022f9feabcca01c";
 var BASE_URL = "https://afds.pages.dev";
 var API_BASE = "https://tga-hd.api.hashhackers.com";
 var WORKER_URL = "https://afds.akzzy-forza.workers.dev";
-var DEVIL_AUTH_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwNjcsImVtYWlsIjoiYWt6enlmb3J6YUBnbWFpbC5jb20iLCJleHAiOjE3NzY5MzUzMjEsImlhdCI6MTc3NjMzMDUyMX0.X-b5rJtq9HF83LVbNXZy0ODokb8_TRcrSusYSbg0M2o";
+var DEVIL_AUTH_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwNjcsImVtYWlsIjoiYWt6enlmb3J6YUBnbWFpbC5jb20iLCJleHAiOjE3Nzc2MjIzMTMsImlhdCI6MTc3NzAxNzUxM30.FzrTQ8klXWXtlyL5KN8hxgj7KWx4hOhS7uJ4CGVRi_o";
 var USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 var HEADERS = {
   "User-Agent": USER_AGENT,
