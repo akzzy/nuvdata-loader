@@ -25,9 +25,18 @@
     {
       "id": "ddlbase",
       "name": "DDL Base",
+      "description": "High-bitrate movie streaming via premium direct file hosts.",
+      "version": "1.0",
+      "author": "Koran",
+      "supportedTypes": [
+        "movie"
+      ],
       "filename": "providers/ddlbase.js",
-      "supportedTypes": ["movie"],
-      "enabled": true
+      "enabled": true,
+      "logo": "https://image.similarpng.com/file/similarpng/very-thumbnail/2021/05/Letter-D-logo-design-template-with-geometric-shape-style-on-transparent-background-PNG.png",
+      "contentLanguage": [
+        "en"
+      ]
     },
     {
       "id": "hashes",
