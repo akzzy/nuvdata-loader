@@ -23,6 +23,13 @@
       ]
     },
     {
+      "id": "ddlbase",
+      "name": "DDL Base",
+      "filename": "providers/ddlbase.js",
+      "supportedTypes": ["movie"],
+      "enabled": true
+    },
+    {
       "id": "hashes",
       "name": "Hashes (Bollywood)",
       "description": "Direct links from Hashes API",
