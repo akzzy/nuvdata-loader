@@ -98,15 +98,12 @@ async function getStreams(tmdbId, mediaType, season, episode) {
             else if (/1080p/i.test(name)) quality = "1080p";
             else if (/720p/i.test(name)) quality = "720p";
 
-            // Format size string cleanly
-            const displaySize = formatBytes(parseInt(file.file_size));
-
+            // Map variables strictly to Nuvio's rewritten template fields
+            const fileSize = formatBytes(parseInt(file.file_size));
             streams.push({
-                name: "AFDS",
-                // Combine name and size into the single layout string Nuvio officially reads
-                title: `${name} [${displaySize}]`, 
+                name: `${name}\n${fileSize} • AFDS`,
                 url: `${WORKER_URL}/stream.mkv?id=${file.id}`,
-                quality: quality // This handles generating the native resolution badge automatically
+                quality: quality 
             });
         }
 
