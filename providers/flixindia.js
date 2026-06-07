@@ -1,6 +1,6 @@
 /**
  * flixindia - Built from src/flixindia/
- * Generated: 2026-06-07T20:50:33.968Z
+ * Generated: 2026-06-07T20:55:57.155Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -238,7 +238,7 @@ function search(query) {
       });
       if (!json || !Array.isArray(json.results)) {
         console.log("[SEARCH] \u26A0\uFE0F No results array");
-        return [];
+        throw new Error(`API didn't return an array. Got: ${JSON.stringify(json).substring(0, 50)}`);
       }
       const results = [];
       for (const item of json.results) {
@@ -260,7 +260,7 @@ function search(query) {
       return results;
     } catch (err) {
       console.log("[SEARCH] \u274C Search failed completely:", err.message);
-      return [];
+      throw err;
     }
   });
 }
