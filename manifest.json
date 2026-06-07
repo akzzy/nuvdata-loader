@@ -23,6 +23,29 @@
       ]
     },
     {
+      "id": "mkvbase",
+      "name": "mkvbase",
+      "filename": "providers/flixindia.js",
+      "logo": "https://mkvbase.site/favicon.ico",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "enabled": true,
+      "contentLanguage": [
+        "en"
+      ],
+      "formats": [
+        "mkv",
+        "mp4",
+        "avi"
+      ],
+      "version": "1.0.0",
+      "disabledPlatforms": [],
+      "supportsExternalPlayer": true,
+      "description": "Streaming provider for Mkvbase"
+    },
+    {
       "id": "ddlbase",
       "name": "DDL Base",
       "description": "High-bitrate movie streaming via premium direct file hosts.",
