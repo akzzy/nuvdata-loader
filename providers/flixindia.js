@@ -1,6 +1,6 @@
 /**
  * flixindia - Built from src/flixindia/
- * Generated: 2026-06-07T20:55:57.155Z
+ * Generated: 2026-06-07T21:00:29.288Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -78,29 +78,14 @@ function storeCookies(res) {
     console.log("[HTTP][COOKIE] Stored:", COOKIE_JAR);
   }
 }
-function sleep(ms) {
+function requestWithRetry(fetchFn, label) {
   return __async(this, null, function* () {
-    return new Promise((r) => setTimeout(r, ms));
-  });
-}
-function requestWithRetry(fetchFn, label, retries = 3) {
-  return __async(this, null, function* () {
-    let attempt = 0;
-    let delay = 500;
-    while (attempt < retries) {
-      try {
-        console.log(`[HTTP][RETRY] ${label} attempt ${attempt + 1}/${retries}`);
-        return yield fetchFn();
-      } catch (err) {
-        attempt++;
-        console.log(`[HTTP][RETRY] \u274C ${label} failed:`, err.message);
-        if (attempt >= retries) {
-          console.log(`[HTTP][RETRY] \u274C ${label} giving up`);
-          throw err;
-        }
-        yield sleep(delay);
-        delay *= 2;
-      }
+    try {
+      console.log(`[HTTP] ${label} fetching...`);
+      return yield fetchFn();
+    } catch (err) {
+      console.log(`[HTTP] \u274C ${label} failed:`, err.message);
+      throw new Error(`${err.message}`);
     }
   });
 }
