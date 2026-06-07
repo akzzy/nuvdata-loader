@@ -1,6 +1,6 @@
 /**
  * flixindia - Built from src/flixindia/
- * Generated: 2026-06-07T20:17:52.809Z
+ * Generated: 2026-06-07T20:28:42.957Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -433,24 +433,23 @@ function getStreams(tmdbId, mediaType, season, episode) {
       const results = yield search(query);
       if (!Array.isArray(results))
         return [];
-      const limitedResults = results.slice(0, 5);
+      const supportedResults = results.filter((item) => item.host === "hubcloud");
+      const limitedResults = supportedResults.slice(0, 5);
       const promises = limitedResults.map((item) => __async(this, null, function* () {
         try {
-          if (item.host === "hubcloud") {
-            const resolved = yield resolveHubCloud(item.url, {
-              title: item.title,
-              quality: item.quality
-            });
-            return resolved.map((stream) => ({
-              name: stream.name,
-              title: stream.title,
-              url: stream.url,
-              quality: stream.quality || "unknown",
-              size: stream.size || null,
-              // <--- New Field
-              headers: {}
-            }));
-          }
+          const resolved = yield resolveHubCloud(item.url, {
+            title: item.title,
+            quality: item.quality
+          });
+          return resolved.map((stream) => ({
+            name: stream.name,
+            title: stream.title,
+            url: stream.url,
+            quality: stream.quality || "unknown",
+            size: stream.size || null,
+            // <--- New Field
+            headers: {}
+          }));
         } catch (err) {
           console.log(`[FlixIndia] Error resolving ${item.url}: ${err.message}`);
         }
