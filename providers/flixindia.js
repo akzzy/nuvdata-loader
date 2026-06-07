@@ -1,6 +1,6 @@
 /**
  * flixindia - Built from src/flixindia/
- * Generated: 2026-06-07T20:28:42.957Z
+ * Generated: 2026-06-07T20:50:33.968Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -284,7 +284,10 @@ function resolveHubCloud(entryUrl, meta) {
     } catch (err) {
       console.log("[HUBCLOUD] \u26A0\uFE0F Could not extract size:", err.message);
     }
-    const generatorUrl = $entry("a#download").attr("href");
+    let generatorUrl = $entry("a#download").attr("href");
+    if (!generatorUrl) {
+      generatorUrl = $entry("a").filter((_, el) => $entry(el).text().includes("Generate Direct Download Link")).attr("href");
+    }
     if (!generatorUrl) {
       console.log("[HUBCLOUD] \u274C Generate link not found");
       return streams;
@@ -333,6 +336,17 @@ function resolveHubCloud(entryUrl, meta) {
             source: "hubcloud-pixeldrain"
           });
         }
+      }
+      if (url.hostname.includes("workers.dev")) {
+        console.log("[HUBCLOUD] \u{1F7E2} Worker candidate:", url.href);
+        streams.push({
+          name: "Flixindia - hubcloud - CF Worker",
+          title: meta.title,
+          url: url.href,
+          quality: meta.quality,
+          size: fileSize,
+          source: "hubcloud-worker"
+        });
       }
     });
     const filtered = streams.filter((s) => {
@@ -414,52 +428,89 @@ function getTmdbTitle(tmdbId, mediaType) {
 }
 function getStreams(tmdbId, mediaType, season, episode) {
   return __async(this, null, function* () {
+    const logs = [];
+    let stepCounter = 1;
+    const addLog = (msg) => {
+      console.log("[DEBUG LOG]", msg);
+      logs.push({
+        name: "FlixIndia DEBUG",
+        title: `${stepCounter++}. ${msg}`,
+        url: "https://hubcloud.foo/dummy.mkv",
+        // Fake URL so it shows up in UI
+        quality: "LOG",
+        size: null,
+        headers: {}
+      });
+    };
     try {
+      addLog(`START: ${tmdbId} (${mediaType})`);
       const baseTitle = yield getTmdbTitle(tmdbId, mediaType);
       if (!baseTitle) {
-        console.log("[FlixIndia] TMDB title not found");
-        return [];
+        addLog(`FAIL: TMDB title not found`);
+        return logs;
       }
+      addLog(`TMDB Title: ${baseTitle}`);
       let query;
       if (mediaType === "movie") {
         query = baseTitle;
       } else if (mediaType === "tv") {
-        if (season == null || episode == null)
-          return [];
+        if (season == null || episode == null) {
+          addLog(`FAIL: Missing season/episode`);
+          return logs;
+        }
         query = `${baseTitle} S${pad2(season)}E${pad2(episode)}`;
       } else {
-        return [];
+        addLog(`FAIL: Invalid media type`);
+        return logs;
       }
-      const results = yield search(query);
-      if (!Array.isArray(results))
-        return [];
+      addLog(`Search Query: ${query}`);
+      let results;
+      try {
+        results = yield search(query);
+      } catch (searchErr) {
+        addLog(`SEARCH FAIL: ${searchErr.message}`);
+        return logs;
+      }
+      if (!Array.isArray(results)) {
+        addLog(`FAIL: Search results is not an array`);
+        return logs;
+      }
+      addLog(`Search Success: ${results.length} total links found`);
       const supportedResults = results.filter((item) => item.host === "hubcloud");
+      addLog(`Hubcloud links found: ${supportedResults.length}`);
+      if (supportedResults.length === 0) {
+        addLog(`STOP: No hubcloud links to process`);
+        return logs;
+      }
       const limitedResults = supportedResults.slice(0, 5);
-      const promises = limitedResults.map((item) => __async(this, null, function* () {
+      addLog(`Resolving top ${limitedResults.length} hubcloud links...`);
+      const promises = limitedResults.map((item, idx) => __async(this, null, function* () {
         try {
           const resolved = yield resolveHubCloud(item.url, {
             title: item.title,
             quality: item.quality
           });
+          addLog(`Resolve [${idx}]: Found ${resolved.length} streams`);
           return resolved.map((stream) => ({
             name: stream.name,
             title: stream.title,
             url: stream.url,
             quality: stream.quality || "unknown",
             size: stream.size || null,
-            // <--- New Field
             headers: {}
           }));
         } catch (err) {
-          console.log(`[FlixIndia] Error resolving ${item.url}: ${err.message}`);
+          addLog(`Resolve [${idx}] FAIL: ${err.message}`);
         }
         return [];
       }));
       const resultsArrays = yield Promise.all(promises);
-      return resultsArrays.flat();
+      const finalStreams = resultsArrays.flat();
+      addLog(`DONE: Extracted ${finalStreams.length} playable streams`);
+      return [...logs, ...finalStreams];
     } catch (err) {
-      console.error(`[FlixIndia] Critical Error: ${err.message}`);
-      return [];
+      addLog(`CRITICAL ERROR: ${err.message}`);
+      return logs;
     }
   });
 }
