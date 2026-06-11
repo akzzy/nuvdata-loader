@@ -40,7 +40,7 @@
         "mp4",
         "avi"
       ],
-      "version": "1.0.4",
+      "version": "1.0.5",
       "disabledPlatforms": [],
       "supportsExternalPlayer": true,
       "description": "Streaming provider for Mkvbase"
