@@ -1,6 +1,6 @@
 /**
  * flixindia - Built from src/flixindia/
- * Generated: 2026-06-11T17:08:41.977Z
+ * Generated: 2026-06-11T17:16:07.163Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -133,7 +133,7 @@ function fetchJson(_0) {
         })
         .then(r => r.text())
         .then(text => { 
-           document.documentElement.innerHTML = text + '<div id="scrapingant-done"></div>';
+           document.body.innerHTML = 'SUPER_SECRET_START' + text + 'SUPER_SECRET_END<div id="scrapingant-done"></div>';
         });
       `;
         const encodedSnippet = encodeURIComponent(btoa(jsSnippet));
@@ -150,7 +150,7 @@ function fetchJson(_0) {
       }
       if (isScrapingAnt) {
         const rawHtml = yield res.text();
-        const match = rawHtml.match(/(\{[\s\S]*\})/);
+        const match = rawHtml.match(new RegExp("SUPER_SECRET_START(.*?)SUPER_SECRET_END", "s"));
         if (match) {
           return JSON.parse(match[1]);
         } else {
