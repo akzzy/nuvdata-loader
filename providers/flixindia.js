@@ -1,6 +1,6 @@
 /**
  * flixindia - Built from src/flixindia/
- * Generated: 2026-06-11T16:09:27.092Z
+ * Generated: 2026-06-11T16:13:58.078Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -103,7 +103,7 @@ function fetchText(_0) {
     }), `GET ${url}`);
   });
 }
-var SCRAPINGANT_KEY = "YOUR_SCRAPINGANT_KEY_HERE";
+var SCRAPINGANT_KEY = "4acd0c94714b4f2594690338dd24267c";
 function fetchJson(_0) {
   return __async(this, arguments, function* (url, options = {}) {
     const method = (options.method || "GET").toUpperCase();
