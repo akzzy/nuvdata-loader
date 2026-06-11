@@ -1,6 +1,6 @@
 /**
  * flixindia - Built from src/flixindia/
- * Generated: 2026-06-11T16:13:58.078Z
+ * Generated: 2026-06-11T17:08:41.977Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -104,14 +104,42 @@ function fetchText(_0) {
   });
 }
 var SCRAPINGANT_KEY = "4acd0c94714b4f2594690338dd24267c";
+var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+function btoa(input) {
+  let str = input;
+  let output = "";
+  for (let block = 0, charCode, i = 0, map = chars; str.charAt(i | 0) || (map = "=", i % 1); output += map.charAt(63 & block >> 8 - i % 1 * 8)) {
+    charCode = str.charCodeAt(i += 3 / 4);
+    block = block << 8 | charCode;
+  }
+  return output;
+}
 function fetchJson(_0) {
   return __async(this, arguments, function* (url, options = {}) {
     const method = (options.method || "GET").toUpperCase();
     return requestWithRetry(() => __async(this, null, function* () {
       let finalUrl = url;
+      let isScrapingAnt = false;
       if (SCRAPINGANT_KEY && SCRAPINGANT_KEY !== "YOUR_SCRAPINGANT_KEY_HERE" && url.includes("mkvbase.site")) {
-        finalUrl = `https://api.scrapingant.com/v2/general?url=${encodeURIComponent(url)}&x-api-key=${SCRAPINGANT_KEY}`;
-        console.log("[HTTP] \u{1F41C} Routing request through ScrapingAnt proxy");
+        isScrapingAnt = true;
+        const apiPath = url.replace("https://mkvbase.site", "");
+        const jsSnippet = `
+        fetch('${apiPath}', {
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Referer': 'https://mkvbase.site/',
+            'Origin': 'https://mkvbase.site'
+          }
+        })
+        .then(r => r.text())
+        .then(text => { 
+           document.documentElement.innerHTML = text + '<div id="scrapingant-done"></div>';
+        });
+      `;
+        const encodedSnippet = encodeURIComponent(btoa(jsSnippet));
+        const targetUrl = encodeURIComponent("https://mkvbase.site");
+        finalUrl = `https://api.scrapingant.com/v2/general?url=${targetUrl}&x-api-key=${SCRAPINGANT_KEY}&js_snippet=${encodedSnippet}&wait_for_selector=%23scrapingant-done`;
+        console.log("[HTTP] \u{1F41C} Routing request via ScrapingAnt js_snippet bypass");
       }
       const res = yield fetch(finalUrl, __spreadProps(__spreadValues({}, options), {
         headers: __spreadValues(__spreadValues(__spreadValues({}, BASE_HEADERS), COOKIE_JAR ? { Cookie: COOKIE_JAR } : {}), options.headers || {})
@@ -120,13 +148,13 @@ function fetchJson(_0) {
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}`);
       }
-      if (finalUrl.includes("scrapingant.com")) {
+      if (isScrapingAnt) {
         const rawHtml = yield res.text();
-        const match = rawHtml.match(new RegExp("(\\{.*\\})", "s"));
+        const match = rawHtml.match(/(\{[\s\S]*\})/);
         if (match) {
           return JSON.parse(match[1]);
         } else {
-          throw new Error("Could not extract JSON from ScrapingAnt HTML response");
+          throw new Error("Could not extract JSON from ScrapingAnt HTML response. Raw: " + rawHtml.substring(0, 100));
         }
       }
       return yield res.json();
