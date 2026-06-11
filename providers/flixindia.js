@@ -1,6 +1,6 @@
 /**
  * flixindia - Built from src/flixindia/
- * Generated: 2026-06-07T21:00:29.288Z
+ * Generated: 2026-06-11T16:09:27.092Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -103,16 +103,31 @@ function fetchText(_0) {
     }), `GET ${url}`);
   });
 }
+var SCRAPINGANT_KEY = "YOUR_SCRAPINGANT_KEY_HERE";
 function fetchJson(_0) {
   return __async(this, arguments, function* (url, options = {}) {
     const method = (options.method || "GET").toUpperCase();
     return requestWithRetry(() => __async(this, null, function* () {
-      const res = yield fetch(url, __spreadProps(__spreadValues({}, options), {
+      let finalUrl = url;
+      if (SCRAPINGANT_KEY && SCRAPINGANT_KEY !== "YOUR_SCRAPINGANT_KEY_HERE" && url.includes("mkvbase.site")) {
+        finalUrl = `https://api.scrapingant.com/v2/general?url=${encodeURIComponent(url)}&x-api-key=${SCRAPINGANT_KEY}`;
+        console.log("[HTTP] \u{1F41C} Routing request through ScrapingAnt proxy");
+      }
+      const res = yield fetch(finalUrl, __spreadProps(__spreadValues({}, options), {
         headers: __spreadValues(__spreadValues(__spreadValues({}, BASE_HEADERS), COOKIE_JAR ? { Cookie: COOKIE_JAR } : {}), options.headers || {})
       }));
       storeCookies(res);
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}`);
+      }
+      if (finalUrl.includes("scrapingant.com")) {
+        const rawHtml = yield res.text();
+        const match = rawHtml.match(new RegExp("(\\{.*\\})", "s"));
+        if (match) {
+          return JSON.parse(match[1]);
+        } else {
+          throw new Error("Could not extract JSON from ScrapingAnt HTML response");
+        }
       }
       return yield res.json();
     }), `${method} ${url}`);
