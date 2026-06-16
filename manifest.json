@@ -46,6 +46,29 @@
       "description": "Streaming provider for Mkvbase"
     },
     {
+      "id": "telbase",
+      "name": "telbase",
+      "filename": "providers/teldrive.js",
+      "logo": "https://mkvbase.site/favicon.ico",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "enabled": true,
+      "contentLanguage": [
+        "en"
+      ],
+      "formats": [
+        "mkv",
+        "mp4",
+        "avi"
+      ],
+      "version": "1.0.1",
+      "disabledPlatforms": [],
+      "supportsExternalPlayer": true,
+      "description": "Streaming provider for telbase"
+    },
+    {
       "id": "ddlbase",
       "name": "DDL Base",
       "description": "High-bitrate movie streaming via premium direct file hosts.",
