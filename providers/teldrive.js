@@ -1,15 +1,13 @@
 /**
  * teldrive - Built from src/teldrive/
- * Generated: 2026-06-16T20:47:44.671Z
+ * Generated: 2026-06-16T21:25:00.617Z
  */
-var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
-var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __propIsEnum = Object.prototype.propertyIsEnumerable;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
@@ -25,6 +23,10 @@ var __spreadValues = (a, b) => {
   return a;
 };
 var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
@@ -33,14 +35,7 @@ var __copyProps = (to, from, except, desc) => {
   }
   return to;
 };
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
     var fulfilled = (value) => {
@@ -62,12 +57,30 @@ var __async = (__this, __arguments, generator) => {
   });
 };
 
+// src/teldrive/index.js
+var teldrive_exports = {};
+__export(teldrive_exports, {
+  getStreams: () => getStreams
+});
+module.exports = __toCommonJS(teldrive_exports);
+
 // src/teldrive/http.js
 var WORKER_URL = "https://teldrive.akzzy-forza.workers.dev/";
+var BASE_URL = "https://mkvbase.site/";
 var BASE_HEADERS = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-  "Content-Type": "application/json"
+  Referer: BASE_URL,
+  Origin: BASE_URL,
+  "X-Requested-With": "XMLHttpRequest"
 };
+var COOKIE_JAR = "";
+function storeCookies(res) {
+  const setCookie = res.headers.get("set-cookie");
+  if (setCookie) {
+    COOKIE_JAR = setCookie.split(";")[0];
+    console.log("[HTTP][COOKIE] Stored:", COOKIE_JAR);
+  }
+}
 function requestWithRetry(fetchFn, label) {
   return __async(this, null, function* () {
     try {
@@ -79,26 +92,16 @@ function requestWithRetry(fetchFn, label) {
     }
   });
 }
-function fetchText(_0) {
-  return __async(this, arguments, function* (url, options = {}) {
-    return requestWithRetry(() => __async(this, null, function* () {
-      const res = yield fetch(url, __spreadProps(__spreadValues({}, options), {
-        headers: __spreadValues(__spreadValues({}, BASE_HEADERS), options.headers || {})
-      }));
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
-      }
-      return yield res.text();
-    }), `GET ${url}`);
-  });
-}
 function fetchJson(_0) {
   return __async(this, arguments, function* (url, options = {}) {
     const method = (options.method || "GET").toUpperCase();
     return requestWithRetry(() => __async(this, null, function* () {
       const res = yield fetch(url, __spreadProps(__spreadValues({}, options), {
-        headers: __spreadValues(__spreadValues({}, BASE_HEADERS), options.headers || {})
+        headers: __spreadValues(__spreadValues(__spreadProps(__spreadValues({}, BASE_HEADERS), {
+          "Content-Type": "application/json"
+        }), COOKIE_JAR ? { Cookie: COOKIE_JAR } : {}), options.headers || {})
       }));
+      storeCookies(res);
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}`);
       }
@@ -167,122 +170,53 @@ function search(query) {
 }
 
 // src/teldrive/hubcloud.js
-var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
 function resolveHubCloud(entryUrl, meta) {
   return __async(this, null, function* () {
-    console.log("\n[HUBCLOUD] \u25B6 Resolving:", entryUrl);
+    console.log("\n[HUBCLOUD] \u25B6 Resolving via TelDrive Worker:", entryUrl);
     const streams = [];
-    const entryHtml = yield fetchText(entryUrl);
-    console.log("[HUBCLOUD] Entry HTML length:", entryHtml.length);
-    const $entry = import_cheerio_without_node_native.default.load(entryHtml);
-    let fileSize = null;
     try {
-      const sizeText = $entry("li").filter((_, el) => $entry(el).text().includes("File Size")).find("i").text().trim();
-      if (sizeText) {
-        fileSize = sizeText;
-        console.log(`[HUBCLOUD] \u{1F4E6} File Size: ${fileSize}`);
-      }
-    } catch (err) {
-      console.log("[HUBCLOUD] \u26A0\uFE0F Could not extract size:", err.message);
-    }
-    let generatorUrl = $entry("a#download").attr("href");
-    if (!generatorUrl) {
-      generatorUrl = $entry("a").filter((_, el) => $entry(el).text().includes("Generate Direct Download Link")).attr("href");
-    }
-    if (!generatorUrl) {
-      console.log("[HUBCLOUD] \u274C Generate link not found");
-      return streams;
-    }
-    console.log("[HUBCLOUD] Generate link found:", generatorUrl);
-    const finalHtml = yield fetchText(generatorUrl);
-    console.log("[HUBCLOUD] Final page HTML length:", finalHtml.length);
-    const $final = import_cheerio_without_node_native.default.load(finalHtml);
-    const fslUrl = $final("a#fsl").attr("href");
-    if (fslUrl) {
-      console.log("[HUBCLOUD] \u2705 FSL link found:", fslUrl);
-      streams.push({
-        name: "TelDrive - hubcloud - FSL",
-        title: meta.title,
-        url: fslUrl,
-        quality: meta.quality,
-        size: fileSize,
-        // <--- Added Size
-        source: "hubcloud-fsl"
+      const json = yield fetchJson(WORKER_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "extract", url: entryUrl })
       });
-    } else {
-      console.log("[HUBCLOUD] \u26A0\uFE0F No FSL link found");
-    }
-    $final("a[href]").each((_, el) => {
-      const href = $final(el).attr("href");
-      if (!href)
-        return;
-      let url;
-      try {
-        url = new URL(href);
-      } catch (e) {
-        return;
-      }
-      console.log("[HUBCLOUD] Link found:", url.href);
-      if (url.hostname.includes("pixeldrain")) {
-        console.log("[HUBCLOUD] \u{1F7E3} PixelDrain candidate:", url.href);
-        const resolved = resolvePixelDrain(url);
-        if (resolved) {
-          streams.push({
-            name: "TelDrive - hubcloud - PixelDrain",
-            title: meta.title,
-            url: resolved,
-            quality: meta.quality,
-            size: fileSize,
-            // <--- Added Size
-            source: "hubcloud-pixeldrain"
-          });
-        }
-      }
-      if (url.hostname.includes("workers.dev")) {
-        console.log("[HUBCLOUD] \u{1F7E2} Worker candidate:", url.href);
+      if (json.r2) {
         streams.push({
-          name: "TelDrive - hubcloud - CF Worker",
+          name: "TelDrive - hubcloud - FSL",
           title: meta.title,
-          url: url.href,
+          url: json.r2,
           quality: meta.quality,
-          size: fileSize,
-          source: "hubcloud-worker"
+          size: meta.size,
+          source: "hubcloud-fsl"
         });
       }
-    });
-    const filtered = streams.filter((s) => {
-      if (s.url.includes("gpdl") || s.url.includes("hubcdn")) {
-        console.log("[HUBCLOUD] \u274C Excluding direct / non-streamable:", s.url);
-        return false;
+      if (json.instant) {
+        streams.push({
+          name: "TelDrive - hubcloud - 10Gbps",
+          title: meta.title,
+          url: json.instant,
+          quality: meta.quality,
+          size: meta.size,
+          source: "hubcloud-instant"
+        });
       }
-      return true;
-    });
-    console.log("[HUBCLOUD] \u25B6 Final streams:", filtered.length);
-    return filtered;
+      if (json.extra && Array.isArray(json.extra)) {
+        json.extra.forEach((ext) => {
+          streams.push({
+            name: `TelDrive - hubcloud - ${ext.name}`,
+            title: meta.title,
+            url: ext.url,
+            quality: meta.quality,
+            size: meta.size,
+            source: `hubcloud-${ext.name.toLowerCase().replace(/\s+/g, "-")}`
+          });
+        });
+      }
+      console.log("[HUBCLOUD] \u25B6 Final streams extracted by worker:", streams.length);
+    } catch (err) {
+      console.log("[HUBCLOUD] \u274C Worker extraction failed:", err.message);
+    }
+    return streams;
   });
-}
-function resolvePixelDrain(url) {
-  try {
-    const parts = url.pathname.split("/").filter(Boolean);
-    let fileId = null;
-    if (parts[0] === "u" && parts[1]) {
-      fileId = parts[1];
-    } else if (parts[0] === "file" && parts[1]) {
-      fileId = parts[1];
-    } else if (parts[0] === "api" && parts[1] === "file" && parts[2]) {
-      fileId = parts[2];
-    }
-    if (!fileId) {
-      console.log("[PIXELDRAIN] \u274C Unsupported format:", url.href);
-      return null;
-    }
-    const finalUrl = `https://${url.hostname}/api/file/${fileId}`;
-    console.log("[PIXELDRAIN] \u2705 Final stream URL:", finalUrl);
-    return finalUrl;
-  } catch (err) {
-    console.log("[PIXELDRAIN] \u274C Error:", err.message);
-    return null;
-  }
 }
 
 // src/teldrive/index.js
@@ -334,7 +268,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
     const addLog = (msg) => {
       console.log("[DEBUG LOG]", msg);
       logs.push({
-        name: "TelDrive DEBUG",
+        name: `[LOG] ${stepCounter++}. ${msg}`,
         title: `${stepCounter++}. ${msg}`,
         url: "https://hubcloud.foo/dummy.mkv",
         // Fake URL so it shows up in UI
@@ -383,8 +317,15 @@ function getStreams(tmdbId, mediaType, season, episode) {
         addLog(`STOP: No hubcloud links to process`);
         return logs;
       }
-      const limitedResults = supportedResults.slice(0, 5);
-      addLog(`Resolving top ${limitedResults.length} hubcloud links...`);
+      const uniqueQualities = /* @__PURE__ */ new Map();
+      for (const item of supportedResults) {
+        const q = item.quality || "unknown";
+        if (!uniqueQualities.has(q)) {
+          uniqueQualities.set(q, item);
+        }
+      }
+      const limitedResults = Array.from(uniqueQualities.values());
+      addLog(`Resolving ${limitedResults.length} unique qualities to save credits...`);
       const promises = limitedResults.map((item, idx) => __async(this, null, function* () {
         try {
           const resolved = yield resolveHubCloud(item.url, {
@@ -415,4 +356,3 @@ function getStreams(tmdbId, mediaType, season, episode) {
     }
   });
 }
-module.exports = { getStreams };
